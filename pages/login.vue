@@ -1,17 +1,23 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient();
-const email = ref("");
 
-const signInWithOtp = async () => {
-  const { error } = await supabase.auth.signInWithOtp({
-    email: email.value,
-    ...(process.env.NODE_ENV === "development" && {
-      options: {
-        emailRedirectTo: `http://localhost:3000/confirm`,
-      },
-    }),
+const form = reactive({
+  email: "",
+  password: "",
+});
+
+const signIn = async () => {
+  const { error } = await supabase.auth.signInWithPassword({
+    email: form.email,
+    password: form.password,
   });
-  if (error) console.log(error);
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  return navigateTo("/supplies");
 };
 
 definePageMeta({
@@ -27,13 +33,19 @@ definePageMeta({
           <UInput
             placeholder="you@example.com"
             icon="i-heroicons-envelope"
-            v-model="email"
+            v-model="form.email"
             type="email"
           />
         </UFormGroup>
-        <UButton @click="signInWithOtp" block>
-          Iniciar sesion con E-Mail
-        </UButton>
+        <UFormGroup label="Contraseña">
+          <UInput
+            placeholder="********"
+            icon="i-heroicons-lock-closed"
+            v-model="form.password"
+            type="password"
+          />
+        </UFormGroup>
+        <UButton @click="signIn" block> Iniciar sesion </UButton>
       </div>
     </UCard>
   </div>

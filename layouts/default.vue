@@ -1,12 +1,21 @@
 <script setup lang="ts">
+const supabase = useSupabaseClient();
+
 const navigation = [
   { label: "Insumos", icon: "i-heroicons-chart-bar", to: "/supplies" },
   { label: "Equipo", icon: "i-heroicons-users", to: "/" },
 ];
 
+const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) console.log(error);
+
+  return navigateTo("/");
+};
+
 const settingsNavigation = [
   { label: "Ajustes", to: "#" },
-  { label: "Salir", to: "#" },
+  { label: "Salir", to: "#", click: logout },
 ];
 </script>
 
