@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const runtimeConfig = useRuntimeConfig();
 const supabase = useSupabaseClient();
 const email = ref("");
 
@@ -6,7 +7,7 @@ const signInWithOtp = async () => {
   const { error } = await supabase.auth.signInWithOtp({
     email: email.value,
     options: {
-      emailRedirectTo: "http://localhost:3000/confirm",
+      emailRedirectTo: `${runtimeConfig.app.baseURL}/confirm`,
     },
   });
   if (error) console.log(error);
@@ -29,7 +30,9 @@ definePageMeta({
             type="email"
           />
         </UFormGroup>
-        <UButton @click="signInWithOtp" block> Sign In with E-Mail </UButton>
+        <UButton @click="signInWithOtp" block>
+          Iniciar sesion con E-Mail
+        </UButton>
       </div>
     </UCard>
   </div>
