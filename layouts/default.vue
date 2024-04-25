@@ -8,9 +8,12 @@ const navigation = [
 
 const logout = async () => {
   const { error } = await supabase.auth.signOut();
-  if (error) console.log(error);
+  if (error) {
+    console.log(error);
+    return;
+  }
 
-  return navigateTo("/");
+  return navigateTo("/login");
 };
 
 const settingsNavigation = [
