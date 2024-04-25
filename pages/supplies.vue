@@ -1,5 +1,4 @@
 <script setup lang="ts">
-let realtimeChannel: any;
 const client = useSupabaseClient();
 const state = useControlState();
 
@@ -30,6 +29,8 @@ const columns = [
 const supplyModal = ref(false);
 const giveModal = ref(false);
 
+let realtimeChannel: any;
+
 onMounted(() => {
   realtimeChannel = client
     .channel("public:supplies")
@@ -37,7 +38,6 @@ onMounted(() => {
       "postgres_changes",
       { event: "*", schema: "public", table: "supplies" },
       () => {
-        console.log("oaslal");
         refreshSupplies();
       }
     );
@@ -51,6 +51,9 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <div class="flex mb-4">
+    <AddSuply />
+  </div>
   <UCard
     :ui="{
       body: {
@@ -68,8 +71,7 @@ onUnmounted(() => {
                 supplyModal = true;
               }
             "
-            color="primary"
-            variant="solid"
+            color="gray"
             label="Suministro"
             icon="i-heroicons-plus-20-solid"
           />
@@ -80,8 +82,7 @@ onUnmounted(() => {
                 giveModal = true;
               }
             "
-            color="red"
-            variant="solid"
+            color="gray"
             label="Entrega"
             icon="i-heroicons-minus-20-solid"
           />
@@ -91,29 +92,4 @@ onUnmounted(() => {
   </UCard>
   <SupplyModal v-model="supplyModal" />
   <GiveModal v-model="giveModal" />
-  <!-- <UModal v-model="supplyModal" :overlay="true">
-    <UCard
-      :ui="{
-        ring: '',
-        divide: 'divide-y divide-gray-200',
-      }"
-    >
-      <template #header> Suministro </template>
-
-      <div class="flex flex-col gap-4">
-        <UFormGroup label="Cantidad (lt/kg/gr)">
-          <UInput type="number" placeholder="1 - 1.5 - 0.7" />
-        </UFormGroup>
-        <UFormGroup label="Fecha de suministro">
-          <UInput type="date" />
-        </UFormGroup>
-      </div>
-
-      <template #footer>
-        <div class="flex justify-end">
-          <UButton label="Completar" />
-        </div>
-      </template>
-    </UCard>
-  </UModal> -->
 </template>
