@@ -6,19 +6,17 @@ const toast = useToast();
 
 const show = ref(false);
 
-const form = reactive<Partial<Database["public"]["Tables"]["supplies"]["Row"]>>(
-  {
-    name: "",
-    current_stock: 0,
-    unit_of_measure: "kilo(s)",
-  }
-);
+const form = reactive<
+  Partial<Database["public"]["Tables"]["maintenance_personnel"]["Row"]>
+>({
+  full_name: "",
+  assignment_area: "",
+});
 
 const onComplete = async () => {
-  const { error } = await client.from("supplies").insert({
-    name: form.name,
-    current_stock: form.current_stock,
-    unit_of_measure: form.unit_of_measure,
+  const { error } = await client.from("maintenance_personnel").insert({
+    full_name: form.full_name,
+    assignment_area: form.assignment_area,
   });
 
   show.value = false;
@@ -40,7 +38,7 @@ const onComplete = async () => {
 </script>
 
 <template>
-  <UButton label="Agregar Insumo" @click="show = true" />
+  <UButton label="Agregar personal" @click="show = true" />
   <UModal v-model="show" :overlay="true">
     <UCard
       :ui="{
@@ -48,24 +46,14 @@ const onComplete = async () => {
         divide: 'divide-y divide-gray-200',
       }"
     >
-      <template #header> Agregar Insumo </template>
+      <template #header> Agregar Personal de Mantenimiento </template>
 
       <div class="flex flex-col gap-4">
-        <UFormGroup label="Nombre">
-          <UInput type="text" v-model="form.name" />
+        <UFormGroup label="Nombre de Personal">
+          <UInput type="text" v-model="form.full_name" />
         </UFormGroup>
-        <UFormGroup label="Unidad de medida">
-          <USelect
-            v-model="form.unit_of_measure"
-            :options="['kilo(s)', 'litro(s)', 'unidade(s)']"
-          />
-        </UFormGroup>
-        <UFormGroup label="Cantidad Inicial">
-          <UInput
-            type="number"
-            placeholder="1 - 1.5 - 0.7"
-            v-model="form.current_stock"
-          />
+        <UFormGroup label="Area">
+          <UInput type="text" v-model="form.assignment_area" />
         </UFormGroup>
       </div>
 

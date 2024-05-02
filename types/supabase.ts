@@ -20,7 +20,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          date: string
+          date?: string
           id?: number
           quantity: number
           supply_id: number
@@ -40,28 +40,138 @@ export type Database = {
             columns: ["supply_id"]
             isOneToOne: false
             referencedRelation: "supplies"
-            referencedColumns: ["id"]
+            referencedColumns: ["supply_id"]
+          },
+        ]
+      }
+      deliveries: {
+        Row: {
+          created_at: string
+          delivery_date: string | null
+          delivery_id: number
+          delivery_quantity: number | null
+          maintenance_id: number | null
+          observations: string | null
+          status: Database["public"]["Enums"]["statuses"] | null
+          supply_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          delivery_date?: string | null
+          delivery_id?: number
+          delivery_quantity?: number | null
+          maintenance_id?: number | null
+          observations?: string | null
+          status?: Database["public"]["Enums"]["statuses"] | null
+          supply_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          delivery_date?: string | null
+          delivery_id?: number
+          delivery_quantity?: number | null
+          maintenance_id?: number | null
+          observations?: string | null
+          status?: Database["public"]["Enums"]["statuses"] | null
+          supply_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_maintenance_id_fkey"
+            columns: ["maintenance_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_personnel"
+            referencedColumns: ["maintenance_id"]
+          },
+          {
+            foreignKeyName: "deliveries_supply_id_fkey"
+            columns: ["supply_id"]
+            isOneToOne: false
+            referencedRelation: "supplies"
+            referencedColumns: ["supply_id"]
+          },
+        ]
+      }
+      maintenance_personnel: {
+        Row: {
+          assignment_area: string | null
+          created_at: string
+          full_name: string | null
+          maintenance_id: number
+        }
+        Insert: {
+          assignment_area?: string | null
+          created_at?: string
+          full_name?: string | null
+          maintenance_id?: number
+        }
+        Update: {
+          assignment_area?: string | null
+          created_at?: string
+          full_name?: string | null
+          maintenance_id?: number
+        }
+        Relationships: []
+      }
+      replenishments: {
+        Row: {
+          created_at: string
+          resupply_date: string | null
+          resupply_id: number
+          resupply_quantity: number | null
+          supply_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          resupply_date?: string | null
+          resupply_id?: number
+          resupply_quantity?: number | null
+          supply_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          resupply_date?: string | null
+          resupply_id?: number
+          resupply_quantity?: number | null
+          supply_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "replenishments_supply_id_fkey"
+            columns: ["supply_id"]
+            isOneToOne: false
+            referencedRelation: "supplies"
+            referencedColumns: ["supply_id"]
           },
         ]
       }
       supplies: {
         Row: {
           created_at: string
-          id: number
+          current_stock: number | null
           name: string | null
-          stock: number | null
+          supply_id: number
+          unit_of_measure:
+            | Database["public"]["Enums"]["measurement_types"]
+            | null
         }
         Insert: {
           created_at?: string
-          id?: number
+          current_stock?: number | null
           name?: string | null
-          stock?: number | null
+          supply_id?: number
+          unit_of_measure?:
+            | Database["public"]["Enums"]["measurement_types"]
+            | null
         }
         Update: {
           created_at?: string
-          id?: number
+          current_stock?: number | null
           name?: string | null
-          stock?: number | null
+          supply_id?: number
+          unit_of_measure?:
+            | Database["public"]["Enums"]["measurement_types"]
+            | null
         }
         Relationships: []
       }
@@ -74,6 +184,8 @@ export type Database = {
     }
     Enums: {
       control_type: "supply" | "give"
+      measurement_types: "kilo(s)" | "litro(s)" | "unidade(s)"
+      statuses: "pending" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never

@@ -4,67 +4,73 @@ export default function useControl() {
   const client = useSupabaseClient<Database>();
   const toast = useToast();
 
-  const supply = async (id: any, quantity: any, date: any) => {
-    const { data } = await client
+  const replenishment = async (
+    data: Partial<Database["public"]["Tables"]["replenishments"]["Row"]>
+  ) => {
+    const { data: supply } = await client
       .from("supplies")
-      .select("id, stock")
-      .eq("id", id)
+      .select("supply_id, current_stock")
+      .eq("supply_id", data.supply_id || 0)
       .single();
 
-    if (data) {
+    if (supply) {
       const { error } = await client
         .from("supplies")
         .update({
-          stock: data.stock + quantity,
+          current_stock: supply.current_stock! + data.resupply_quantity!,
         })
-        .eq("id", id);
+        .eq("supply_id", supply.supply_id);
 
-      if (error) return;
+      if (error) return false;
 
-      await client.from("control").insert({
-        date,
-        quantity,
-        supply_id: data.id,
-        type: "supply",
+      await client.from("replenishments").insert({
+        ...data,
       });
+
+      return true;
     }
+
+    return false;
   };
 
-  const give = async (id: any, quantity: any, date: any) => {
-    const { data } = await client
+  const delivery = async (
+    data: Partial<Database["public"]["Tables"]["deliveries"]["Row"]>
+  ) => {
+    const { data: supply } = await client
       .from("supplies")
-      .select("id, stock")
-      .eq("id", id)
+      .select("supply_id, current_stock")
+      .eq("supply_id", data.supply_id || 0)
       .single();
 
-    if (data) {
-      if (quantity > data.stock!) {
+    if (supply) {
+      if (data.delivery_quantity! > supply.current_stock!) {
         toast.add({
           description: "La cantidad a entregar es mayor a la que se tiene",
         });
-        return;
+        return false;
       }
 
       const { error } = await client
         .from("supplies")
         .update({
-          stock: data.stock! - quantity,
+          current_stock: supply.current_stock! - data.delivery_quantity!,
         })
-        .eq("id", id);
+        .eq("supply_id", supply.supply_id);
 
-      if (error) return;
+      if (error) return false;
 
-      await client.from("control").insert({
-        date,
-        quantity,
-        supply_id: data.id,
-        type: "give",
+      await client.from("deliveries").insert({
+        ...data,
       });
+
+      return true;
     }
+
+    return false;
   };
 
   return {
-    give,
-    supply,
+    delivery,
+    replenishment,
   };
 }

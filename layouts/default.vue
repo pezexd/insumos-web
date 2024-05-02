@@ -3,7 +3,12 @@ const supabase = useSupabaseClient();
 
 const navigation = [
   { label: "Insumos", icon: "i-heroicons-chart-bar", to: "/supplies" },
-  { label: "Equipo", icon: "i-heroicons-users", to: "/" },
+  { label: "Equipo", icon: "i-heroicons-users", to: "/maintenances" },
+  {
+    label: "Entregas",
+    icon: "i-heroicons-bars-arrow-up-solid",
+    to: "/deliveries",
+  },
 ];
 
 const logout = async () => {

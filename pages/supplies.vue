@@ -1,11 +1,14 @@
 <script setup lang="ts">
-const client = useSupabaseClient();
-const state = useControlState();
+import type { Database } from "~/types/supabase";
+
+const client = useSupabaseClient<Database>();
 
 const { data: supplies, refresh: refreshSupplies } = await useAsyncData(
   "supplies",
   async () => {
-    const { data } = await client.from("supplies").select("id, name, stock");
+    const { data } = await client
+      .from("supplies")
+      .select("supply_id, name, current_stock");
 
     return data;
   }
@@ -17,7 +20,7 @@ const columns = [
     label: "Nombre",
   },
   {
-    key: "stock",
+    key: "current_stock",
     label: "Stock",
   },
   {
@@ -25,9 +28,6 @@ const columns = [
     label: "Acciones",
   },
 ];
-
-const supplyModal = ref(false);
-const giveModal = ref(false);
 
 let realtimeChannel: any;
 
@@ -51,8 +51,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex mb-4">
+  <div class="flex gap-2 mb-4">
     <AddSuply />
+    <AddResupply />
   </div>
   <UCard
     :ui="{
@@ -64,32 +65,9 @@ onUnmounted(() => {
     <UTable :key="supplies" :columns="columns" :rows="supplies">
       <template #actions-data="{ row }">
         <div class="flex gap-2">
-          <UButton
-            @click="
-              () => {
-                state.selectedId = row.id;
-                supplyModal = true;
-              }
-            "
-            color="gray"
-            label="Suministro"
-            icon="i-heroicons-plus-20-solid"
-          />
-          <UButton
-            @click="
-              () => {
-                state.selectedId = row.id;
-                giveModal = true;
-              }
-            "
-            color="gray"
-            label="Entrega"
-            icon="i-heroicons-minus-20-solid"
-          />
+          <AddDelivery />
         </div>
       </template>
     </UTable>
   </UCard>
-  <SupplyModal v-model="supplyModal" />
-  <GiveModal v-model="giveModal" />
 </template>
