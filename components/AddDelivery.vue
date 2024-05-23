@@ -91,7 +91,12 @@ async function onComplete() {
 </script>
 
 <template>
-  <UButton label="Hacer Entrega" @click="show = true" />
+  <UButton
+    variant="outline"
+    label="Hacer Entrega"
+    icon="i-heroicons-pencil-square"
+    @click="show = true"
+  />
   <UModal v-model="show" :overlay="true">
     <UCard
       :ui="{

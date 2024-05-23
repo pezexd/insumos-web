@@ -54,7 +54,12 @@ async function onComplete() {
 </script>
 
 <template>
-  <UButton label="Hacer Reabastecimiento" @click="show = true" />
+  <UButton
+    variant="outline"
+    label="Hacer Reabastecimiento"
+    icon="i-heroicons-squares-plus"
+    @click="show = true"
+  />
   <UModal v-model="show" :overlay="true">
     <UCard
       :ui="{

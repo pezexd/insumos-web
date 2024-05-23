@@ -2,6 +2,7 @@
 import type { Database } from "~/types/supabase";
 
 const client = useSupabaseClient<Database>();
+const toast = useToast();
 
 const { data: supplies, refresh: refreshSupplies } = await useAsyncData(
   "supplies",
@@ -17,7 +18,7 @@ const { data: supplies, refresh: refreshSupplies } = await useAsyncData(
 const columns = [
   {
     key: "name",
-    label: "Nombre",
+    label: "Insumo",
   },
   {
     key: "current_stock",
@@ -25,8 +26,22 @@ const columns = [
   },
   {
     key: "actions",
-    label: "Acciones",
   },
+];
+
+const items = (row: any) => [
+  [
+    {
+      label: "Eliminar",
+      icon: "i-heroicons-trash",
+      click: async () => {
+        await client.from("supplies").delete().eq("supply_id", row.supply_id);
+        toast.add({
+          description: "Insumo eliminado!",
+        });
+      },
+    },
+  ],
 ];
 
 let realtimeChannel: any;
@@ -51,10 +66,18 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex gap-2 mb-4">
+  <UCard
+    :ui="{
+      body: {
+        base: 'space-x-2',
+        padding: 'p-2 sm:p-2',
+      },
+    }"
+    class="mb-2"
+  >
     <AddSuply />
     <AddResupply />
-  </div>
+  </UCard>
   <UCard
     :ui="{
       body: {
@@ -64,8 +87,16 @@ onUnmounted(() => {
   >
     <UTable :key="supplies" :columns="columns" :rows="supplies">
       <template #actions-data="{ row }">
-        <div class="flex gap-2">
+        <div class="flex justify-end gap-2">
           <AddDelivery />
+
+          <UDropdown :items="items(row)">
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal-20-solid"
+            />
+          </UDropdown>
         </div>
       </template>
     </UTable>

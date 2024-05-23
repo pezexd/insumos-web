@@ -40,7 +40,12 @@ const onComplete = async () => {
 </script>
 
 <template>
-  <UButton label="Agregar Insumo" @click="show = true" />
+  <UButton
+    variant="outline"
+    label="Agregar Insumo"
+    icon="i-heroicons-plus-circle"
+    @click="show = true"
+  />
   <UModal v-model="show" :overlay="true">
     <UCard
       :ui="{

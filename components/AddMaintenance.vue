@@ -38,7 +38,12 @@ const onComplete = async () => {
 </script>
 
 <template>
-  <UButton label="Agregar personal" @click="show = true" />
+  <UButton
+    variant="outline"
+    label="Agregar personal"
+    icon="i-heroicons-user-plus"
+    @click="show = true"
+  />
   <UModal v-model="show" :overlay="true">
     <UCard
       :ui="{

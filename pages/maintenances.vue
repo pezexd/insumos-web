@@ -2,13 +2,14 @@
 import type { Database } from "~/types/supabase";
 
 const client = useSupabaseClient<Database>();
+const toast = useToast();
 
 const { data: team, refresh: refreshTeam } = await useAsyncData(
   "team",
   async () => {
     const { data } = await client
       .from("maintenance_personnel")
-      .select("full_name, assignment_area");
+      .select("maintenance_id, full_name, assignment_area");
 
     return data;
   }
@@ -23,6 +24,28 @@ const columns = [
     key: "assignment_area",
     label: "Area",
   },
+  {
+    key: "actions",
+  },
+];
+
+const items = (row: any) => [
+  [
+    {
+      label: "Eliminar",
+      icon: "i-heroicons-trash",
+      click: async () => {
+        await client
+          .from("maintenance_personnel")
+          .delete()
+          .eq("maintenance_id", row.maintenance_id);
+        toast.add({
+          description: "Personal eliminado!",
+        });
+        refreshTeam();
+      },
+    },
+  ],
 ];
 
 let realtimeChannel: any;
@@ -47,9 +70,16 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex mb-4">
+  <UCard
+    :ui="{
+      body: {
+        padding: 'p-2 sm:p-2',
+      },
+    }"
+    class="mb-2"
+  >
     <AddMaintenance />
-  </div>
+  </UCard>
   <UCard
     :ui="{
       body: {
@@ -57,6 +87,18 @@ onUnmounted(() => {
       },
     }"
   >
-    <UTable :key="team" :columns="columns" :rows="team" />
+    <UTable :key="team" :columns="columns" :rows="team">
+      <template #actions-data="{ row }">
+        <div class="flex justify-end">
+          <UDropdown :items="items(row)">
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal-20-solid"
+            />
+          </UDropdown>
+        </div>
+      </template>
+    </UTable>
   </UCard>
 </template>
