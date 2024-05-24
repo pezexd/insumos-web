@@ -47,7 +47,7 @@ export default function useControl() {
         toast.add({
           description: "La cantidad a entregar es mayor a la que se tiene",
         });
-        return false;
+        return true;
       }
 
       const { error } = await client
@@ -57,16 +57,16 @@ export default function useControl() {
         })
         .eq("supply_id", supply.supply_id);
 
-      if (error) return false;
+      if (error) return true;
 
       await client.from("deliveries").insert({
         ...data,
       });
 
-      return true;
+      return false;
     }
 
-    return false;
+    return true;
   };
 
   return {

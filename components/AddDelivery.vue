@@ -75,18 +75,18 @@ async function onComplete() {
 
   const error = await delivery(form);
 
-  if (!error) {
+  if (error) {
     toast.add({
       color: "red",
       description: "Problema al agregar la entrega",
     });
+  } else {
+    show.value = false;
+    toast.add({
+      color: "primary",
+      description: "Entrega agregada correctamente",
+    });
   }
-
-  show.value = false;
-  toast.add({
-    color: "primary",
-    description: "Entrega agregada correctamente",
-  });
 }
 </script>
 
