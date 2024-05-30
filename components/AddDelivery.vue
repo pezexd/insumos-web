@@ -128,7 +128,11 @@ async function onComplete() {
           />
         </UFormGroup>
         <UFormGroup label="Fecha de entrega">
-          <UInput type="date" v-model="form.delivery_date" />
+          <UInput
+            type="date"
+            :min="new Date().toISOString().split('T')[0]"
+            v-model="form.delivery_date"
+          />
         </UFormGroup>
         <UFormGroup label="Observaciones">
           <UTextarea v-model="form.observations" />
