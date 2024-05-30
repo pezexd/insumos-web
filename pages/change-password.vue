@@ -3,13 +3,11 @@ const supabase = useSupabaseClient();
 const toast = useToast();
 
 const form = reactive({
-  email: "",
   password: "",
 });
 
 const onSubmit = async () => {
-  const { error } = await supabase.auth.signInWithPassword({
-    email: form.email,
+  const { error } = await supabase.auth.updateUser({
     password: form.password,
   });
 
@@ -18,13 +16,13 @@ const onSubmit = async () => {
       color: "red",
       icon: "i-heroicons-no-symbol",
       title: "Error",
-      description: "Credenciales de acceso no válidas",
+      description:
+        "Ocurrio un error al realizar la recuperación de la contraseña.",
     });
-
     return;
   }
 
-  return navigateTo("/supplies");
+  return navigateTo("/login");
 };
 
 definePageMeta({
@@ -39,23 +37,14 @@ definePageMeta({
       <h2
         class="mt-6 text-center text-2xl font-bold tracking-tight text-stone-900"
       >
-        Insumos Web
+        Recuperación
       </h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
       <UCard>
         <UForm :state="form" @submit="onSubmit" class="space-y-6">
-          <UFormGroup label="Email">
-            <UInput
-              placeholder="you@example.com"
-              icon="i-heroicons-envelope"
-              v-model="form.email"
-              type="email"
-            />
-          </UFormGroup>
-
-          <UFormGroup label="Contraseña">
+          <UFormGroup label="Contraseña" help="Introduzca su nueva contraseña.">
             <UInput
               placeholder="********"
               icon="i-heroicons-lock-closed"
@@ -64,16 +53,10 @@ definePageMeta({
             />
           </UFormGroup>
 
-          <div class="flex items-center justify-between">
-            <UButton
-              :padded="false"
-              to="recovery"
-              variant="link"
-              label="Olvidaste la contraseña?"
-            />
+          <div class="flex justify-between items-center">
+            <UButton to="/login" color="gray"> Volver </UButton>
+            <UButton type="submit"> Confirmar </UButton>
           </div>
-
-          <UButton type="submit" block> Iniciar sesion </UButton>
         </UForm>
       </UCard>
     </div>

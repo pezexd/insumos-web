@@ -1,16 +1,15 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient();
 const toast = useToast();
+const url = useRequestURL();
 
 const form = reactive({
   email: "",
-  password: "",
 });
 
 const onSubmit = async () => {
-  const { error } = await supabase.auth.signInWithPassword({
-    email: form.email,
-    password: form.password,
+  const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
+    redirectTo: `${url.origin}/change-password`,
   });
 
   if (error) {
@@ -18,13 +17,13 @@ const onSubmit = async () => {
       color: "red",
       icon: "i-heroicons-no-symbol",
       title: "Error",
-      description: "Credenciales de acceso no válidas",
+      description:
+        "La recuperación de la contraseña requiere un correo electrónico",
     });
-
     return;
   }
 
-  return navigateTo("/supplies");
+  return navigateTo("/login");
 };
 
 definePageMeta({
@@ -39,14 +38,17 @@ definePageMeta({
       <h2
         class="mt-6 text-center text-2xl font-bold tracking-tight text-stone-900"
       >
-        Insumos Web
+        Recuperación
       </h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
       <UCard>
         <UForm :state="form" @submit="onSubmit" class="space-y-6">
-          <UFormGroup label="Email">
+          <UFormGroup
+            label="Email"
+            help="Introduzca su dirección de correo electrónico para proceder con la recuperación de su contraseña."
+          >
             <UInput
               placeholder="you@example.com"
               icon="i-heroicons-envelope"
@@ -55,25 +57,10 @@ definePageMeta({
             />
           </UFormGroup>
 
-          <UFormGroup label="Contraseña">
-            <UInput
-              placeholder="********"
-              icon="i-heroicons-lock-closed"
-              v-model="form.password"
-              type="password"
-            />
-          </UFormGroup>
-
-          <div class="flex items-center justify-between">
-            <UButton
-              :padded="false"
-              to="recovery"
-              variant="link"
-              label="Olvidaste la contraseña?"
-            />
+          <div class="flex justify-between items-center">
+            <UButton to="/login" color="gray"> Volver </UButton>
+            <UButton type="submit"> Confirmar </UButton>
           </div>
-
-          <UButton type="submit" block> Iniciar sesion </UButton>
         </UForm>
       </UCard>
     </div>
