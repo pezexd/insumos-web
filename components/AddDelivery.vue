@@ -53,7 +53,7 @@ const form = reactive<
   Partial<Database["public"]["Tables"]["deliveries"]["Row"]>
 >({
   delivery_date: "",
-  delivery_quantity: 0,
+  delivery_quantity: 1,
   maintenance_id: 0,
   observations: "",
   status: "pending",
@@ -67,7 +67,15 @@ const maxStock = computed(() => {
 
   if (!supply) return 0;
 
-  return supply.stock;
+  return supply.stock || 0;
+});
+
+watch(maxStock, () => {
+  if (form.delivery_quantity) {
+    if (form.delivery_quantity > maxStock.value) {
+      form.delivery_quantity = maxStock.value;
+    }
+  }
 });
 
 async function onComplete() {
@@ -123,16 +131,13 @@ async function onComplete() {
           <UInput
             type="number"
             placeholder="1 - 1.5 - 0.7"
+            min="1"
             :max="maxStock"
             v-model="form.delivery_quantity"
           />
         </UFormGroup>
         <UFormGroup label="Fecha de entrega">
-          <UInput
-            type="date"
-            :min="new Date().toISOString().split('T')[0]"
-            v-model="form.delivery_date"
-          />
+          <UInput type="date" :min="today" v-model="form.delivery_date" />
         </UFormGroup>
         <UFormGroup label="Observaciones">
           <UTextarea v-model="form.observations" />

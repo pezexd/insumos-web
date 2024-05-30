@@ -29,7 +29,7 @@ const form = reactive<
   Partial<Database["public"]["Tables"]["replenishments"]["Row"]>
 >({
   resupply_date: "",
-  resupply_quantity: 0,
+  resupply_quantity: 1,
   supply_id: 0,
 });
 
@@ -77,11 +77,12 @@ async function onComplete() {
           <UInput
             type="number"
             placeholder="1 - 1.5 - 0.7"
+            min="1"
             v-model="form.resupply_quantity"
           />
         </UFormGroup>
         <UFormGroup label="Fecha de reabastecimiento">
-          <UInput type="date" v-model="form.resupply_date" />
+          <UInput type="date" :min="today" v-model="form.resupply_date" />
         </UFormGroup>
       </div>
 

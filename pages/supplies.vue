@@ -77,6 +77,7 @@ onUnmounted(() => {
   >
     <AddSuply />
     <AddResupply />
+    <AddDelivery />
   </UCard>
   <UCard
     :ui="{
@@ -88,8 +89,6 @@ onUnmounted(() => {
     <UTable :key="supplies" :columns="columns" :rows="supplies">
       <template #actions-data="{ row }">
         <div class="flex justify-end gap-2">
-          <AddDelivery />
-
           <UDropdown :items="items(row)">
             <UButton
               color="gray"

@@ -69,6 +69,7 @@ const onComplete = async () => {
           <UInput
             type="number"
             placeholder="1 - 1.5 - 0.7"
+            min="0"
             v-model="form.current_stock"
           />
         </UFormGroup>
