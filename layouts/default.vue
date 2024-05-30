@@ -28,7 +28,7 @@ const settingsNavigation = [
 </script>
 
 <template>
-  <Html class="h-full bg-gray-100">
+  <Html class="h-full bg-gray-100 font-['Poppins']">
     <Body class="h-full">
       <div class="min-h-full">
         <nav class="bg-white shadow-sm">
